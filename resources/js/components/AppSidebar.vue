@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
     SidebarTrigger
 } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
+import { type NavItem } from '@/../types';
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid, HelpCircle } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
