@@ -1,5 +1,7 @@
 <template>
-  <AppLayout title="Conversation">
+    <Head title="Helpdesk" />
+
+    <AppLayout title="Conversation">
     <template #header>
       <div class="flex justify-between items-center">
         <Breadcrumb :items="[
