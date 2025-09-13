@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
       <div>
-        <Heading>Tag Management</Heading>
+        <Heading title="Tag Management"/>
         <p class="text-muted-foreground mt-1">Manage knowledge base tags and their usage.</p>
       </div>
       <div class="space-x-2">
@@ -78,15 +78,15 @@
                 {{ formatDate(tag.created_at) }}
               </td>
               <td class="p-4 text-right space-x-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   @click="editTag(tag)"
                 >
                   <Edit class="w-4 h-4" />
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   class="text-red-600 hover:text-red-700"
                   @click="confirmDelete(tag)"
@@ -99,7 +99,7 @@
           </tbody>
         </table>
       </div>
-      
+
       <!-- Empty State -->
       <div v-if="tags.data.length === 0" class="text-center py-12">
         <Tag class="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -119,8 +119,8 @@
         Showing {{ tags.from }} to {{ tags.to }} of {{ tags.total }} results
       </p>
       <div class="flex space-x-2">
-        <Button 
-          v-for="link in tags.links" 
+        <Button
+          v-for="link in tags.links"
           :key="link.label"
           :variant="link.active ? 'default' : 'outline'"
           size="sm"
@@ -140,7 +140,7 @@
             {{ editingTag ? 'Update the tag details below.' : 'Create a new tag for organizing articles.' }}
           </DialogDescription>
         </DialogHeader>
-        
+
         <form @submit.prevent="saveTag" class="space-y-4">
           <div class="space-y-2">
             <Label for="tag-name">Name</Label>
@@ -174,13 +174,13 @@
             Are you sure you want to delete the tag "{{ tagToDelete?.name }}"? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
-        
+
         <DialogFooter>
           <Button variant="outline" @click="showDeleteDialog = false">
             Cancel
           </Button>
-          <Button 
-            variant="destructive" 
+          <Button
+            variant="destructive"
             @click="deleteTag"
             :disabled="deleteForm.processing"
           >

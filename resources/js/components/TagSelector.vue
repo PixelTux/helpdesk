@@ -30,11 +30,11 @@
         @keydown.arrow-up.prevent="highlightPrevious"
         :class="{ 'border-red-300': errors }"
       />
-      
+
       <!-- Suggestions Dropdown -->
       <div
         v-if="showSuggestions && (filteredTags.length > 0 || canCreateNew)"
-        class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
+        class="absolute z-10 w-full mt-1 bg-primary-foreground border border-sidebar-border rounded-md shadow-lg max-h-60 overflow-y-auto"
       >
         <!-- Existing tags -->
         <button
@@ -43,22 +43,22 @@
           type="button"
           @click="selectTag(tag)"
           :class="[
-            'w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center justify-between',
-            { 'bg-blue-50': index === highlightedIndex }
+            'w-full px-4 py-2 text-left hover:bg-muted-foreground/35 flex items-center justify-between',
+            { 'bg-muted-foreground/25 ': index === highlightedIndex }
           ]"
         >
           <span>{{ tag.name }}</span>
-          <span class="text-xs text-gray-500">{{ tag.slug }}</span>
+          <span class="text-xs text-muted-foreground">{{ tag.slug }}</span>
         </button>
-        
+
         <!-- Create new tag option -->
         <button
           v-if="canCreateNew"
           type="button"
           @click="createNewTag"
           :class="[
-            'w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center text-green-600',
-            { 'bg-blue-50': filteredTags.length === highlightedIndex }
+            'w-full px-4 py-2 text-left hover:bg-muted-foreground/35 flex items-center text-green-600',
+            { 'bg-accent': filteredTags.length === highlightedIndex }
           ]"
         >
           <PlusIcon class="w-4 h-4 mr-2" />
@@ -109,13 +109,13 @@ const selectedTags = computed({
 
 const filteredTags = computed(() => {
   if (!newTagName.value) return []
-  
+
   const query = newTagName.value.toLowerCase()
   const selectedIds = selectedTags.value.map(tag => tag.id).filter(Boolean)
-  
+
   return props.availableTags
-    .filter(tag => 
-      tag.name.toLowerCase().includes(query) && 
+    .filter(tag =>
+      tag.name.toLowerCase().includes(query) &&
       !selectedIds.includes(tag.id)
     )
     .slice(0, 10) // Limit to 10 suggestions
@@ -123,15 +123,15 @@ const filteredTags = computed(() => {
 
 const canCreateNew = computed(() => {
   if (!newTagName.value || newTagName.value.length < 2) return false
-  
-  const exactMatch = props.availableTags.some(tag => 
+
+  const exactMatch = props.availableTags.some(tag =>
     tag.name.toLowerCase() === newTagName.value.toLowerCase()
   )
-  
-  const alreadySelected = selectedTags.value.some(tag => 
+
+  const alreadySelected = selectedTags.value.some(tag =>
     tag.name.toLowerCase() === newTagName.value.toLowerCase()
   )
-  
+
   return !exactMatch && !alreadySelected
 })
 

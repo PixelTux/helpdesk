@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <Heading>Create Article</Heading>
+      <Heading title="Create Article" />
       <Button @click="goBack" variant="outline">
         <ArrowLeftIcon class="w-4 h-4 mr-2" />
         Back to Articles
@@ -10,11 +10,11 @@
     </div>
 
     <!-- Form -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="rounded-lg shadow-sm border">
       <form @submit.prevent="submitForm" class="p-6 space-y-6">
         <!-- Title -->
         <div>
-          <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="title" class="block text-sm font-medium mb-2">
             Title *
           </label>
           <Input
@@ -31,7 +31,7 @@
 
         <!-- Slug -->
         <div>
-          <label for="slug" class="block text-sm font-medium text-gray-700 mb-2">
+          <label for="slug" class="block text-sm font-medium mb-2">
             Slug *
           </label>
           <Input
@@ -43,7 +43,7 @@
           <div v-if="errors.slug" class="mt-1 text-sm text-red-600">
             {{ errors.slug }}
           </div>
-          <div class="mt-1 text-sm text-gray-500">
+          <div class="mt-1 text-sm text-muted-foreground">
             URL: {{ baseUrl }}/knowledge-base/{{ form.slug || 'article-slug' }}
           </div>
         </div>
@@ -51,11 +51,11 @@
 
         <!-- Tags -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium mb-2">
             Tags
           </label>
-          <TagSelector 
-            v-model="form.tags" 
+          <TagSelector
+            v-model="form.tags"
             :available-tags="tags"
             :errors="errors.tags"
           />
@@ -63,10 +63,10 @@
 
         <!-- Content Editor -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+          <label class="block text-sm font-medium mb-2">
             Content *
           </label>
-          <TiptapEditor 
+          <TiptapEditor
             v-model="form.body"
             :error="errors.body"
           />
@@ -84,13 +84,13 @@
                 v-model="form.is_published"
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <span class="ml-2 text-sm font-medium text-gray-700">
+              <span class="ml-2 text-sm font-medium">
                 Publish immediately
               </span>
             </label>
           </div>
           <div v-if="form.is_published" class="mt-4">
-            <label for="published_at" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="published_at" class="block text-sm font-medium mb-2">
               Publish Date
             </label>
             <Input
@@ -111,15 +111,15 @@
             Cancel
           </Button>
           <div class="flex gap-2">
-            <Button 
-              type="button" 
-              @click="saveDraft" 
+            <Button
+              type="button"
+              @click="saveDraft"
               variant="outline"
               :disabled="processing"
             >
               Save as Draft
             </Button>
-            <Button 
+            <Button
               type="submit"
               :disabled="processing"
             >
@@ -188,7 +188,7 @@ const generateSlug = () => {
 
 const submitForm = () => {
   processing.value = true
-  
+
   router.post(route('admin.knowledge-base.store'), form, {
     onSuccess: () => {
       // Redirect handled by controller
@@ -206,9 +206,9 @@ const submitForm = () => {
 const saveDraft = () => {
   const originalPublished = form.is_published
   form.is_published = false
-  
+
   processing.value = true
-  
+
   router.post(route('admin.knowledge-base.store'), form, {
     onSuccess: () => {
       // Redirect handled by controller

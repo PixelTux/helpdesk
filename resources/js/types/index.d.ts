@@ -10,7 +10,8 @@ export interface CollapseStatesStore {
 
 // Navigation types
 export interface BreadcrumbItemType {
-  label: string;
+  title: string;
+  label?: string;
   href: string;
 }
 

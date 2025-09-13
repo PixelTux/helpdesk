@@ -1,27 +1,27 @@
 <template>
-  <div class="max-w-5xl mx-auto space-y-8">
+  <div class="space-y-6">
     <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div class="flex justify-between items-start">
+    <div class="rounded-lg shadow-sm border">
+      <div class="flex justify-between items-start p-6">
         <div class="flex-1">
-          <div class="flex items-center gap-3 mb-2">
-            <Heading class="text-2xl">{{ article.title }}</Heading>
-            <span 
+          <div class="flex items-center gap-3 mb-4">
+            <Heading :title="article.title">{{ article.title }}</Heading>
+            <span
               :class="{
-                'bg-green-100 text-green-800': article.is_published,
-                'bg-yellow-100 text-yellow-800': !article.is_published,
-                'bg-red-100 text-red-800': article.deleted_at
+                'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300': article.is_published,
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300': !article.is_published,
+                'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300': article.deleted_at
               }"
               class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"
             >
               {{ article.deleted_at ? 'Trashed' : (article.is_published ? 'Published' : 'Draft') }}
             </span>
           </div>
-          
-          <div class="flex items-center gap-6 text-sm text-gray-600">
+
+          <div class="flex items-center gap-6 text-sm text-muted-foreground">
             <div class="flex items-center gap-2">
               <span class="font-medium">Slug:</span>
-              <span class="font-mono bg-gray-100 px-2 py-1 rounded text-xs">{{ article.slug }}</span>
+              <span class="font-mono bg-accent px-2 py-1 rounded text-xs">{{ article.slug }}</span>
             </div>
             <div v-if="article.published_at">
               <span class="font-medium">Published:</span> {{ formatDate(article.published_at) }}
@@ -30,11 +30,11 @@
               <span class="font-medium">Views:</span> {{ article.view_count || 0 }}
             </div>
           </div>
-          
+
           <!-- Tags -->
           <div v-if="article.tags.length > 0" class="flex flex-wrap gap-2 mt-4">
-            <span 
-              v-for="tag in article.tags" 
+            <span
+              v-for="tag in article.tags"
               :key="tag.id"
               class="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
             >
@@ -42,7 +42,7 @@
             </span>
           </div>
         </div>
-        
+
         <div class="flex gap-2 ml-4">
           <Button @click="editArticle" variant="default" size="sm">
             <PencilIcon class="w-4 h-4 mr-2" />
@@ -57,23 +57,26 @@
     </div>
 
     <!-- Article Meta -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div class="rounded-lg shadow-sm border p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Slug</h3>
-          <p class="text-sm text-gray-900 font-mono bg-gray-50 px-2 py-1 rounded">
+          <h3 class="text-sm font-bold mb-2">Slug</h3>
+          <p class="font-mono bg-accent px-2 py-1 rounded text-sm text-muted-foreground">
             {{ article.slug }}
           </p>
         </div>
-        <div v-if="article.published_at">
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Published At</h3>
-          <p class="text-sm text-gray-900">
+        <div>
+          <h3 class="text-sm font-bold mb-3">Published At</h3>
+          <p v-if="article.published_at" class="text-sm text-muted-foreground">
             {{ formatDate(article.published_at) }}
+          </p>
+          <p v-else class="text-sm text-muted-foreground">
+            Not yet published
           </p>
         </div>
         <div>
-          <h3 class="text-sm font-medium text-gray-700 mb-2">View Count</h3>
-          <p class="text-sm text-gray-900">
+          <h3 class="text-sm font-bold mb-3">View Count</h3>
+          <p class="text-sm text-muted-foreground">
             {{ article.view_count || 0 }} views
           </p>
         </div>
@@ -81,11 +84,11 @@
     </div>
 
     <!-- Tags -->
-    <div v-if="article.tags.length > 0" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-sm font-medium text-gray-700 mb-3">Tags</h3>
+    <div v-if="article.tags.length > 0" class="rounded-lg shadow-sm border p-6">
+      <h3 class="text-sm font-bold mb-2">Tags</h3>
       <div class="flex flex-wrap gap-2">
-        <span 
-          v-for="tag in article.tags" 
+        <span
+          v-for="tag in article.tags"
           :key="tag.id"
           class="inline-flex px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full"
         >
@@ -95,37 +98,37 @@
     </div>
 
     <!-- Excerpt -->
-    <div v-if="article.excerpt" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-sm font-medium text-gray-700 mb-3">Excerpt</h3>
-      <p class="text-gray-900">{{ article.excerpt }}</p>
+    <div v-if="article.excerpt" class="rounded-lg shadow-sm border p-6">
+      <h3 class="text-sm font-bold mb-3">Excerpt</h3>
+      <p class="text-muted-foreground">{{ article.excerpt }}</p>
     </div>
 
     <!-- Content -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-sm font-medium text-gray-700 mb-3">Content</h3>
-      <div class="prose max-w-none">
+    <div class="rounded-lg shadow-sm border p-6">
+      <h3 class="text-sm font-bold mb-3">Content</h3>
+      <div class="prose max-w-none text-muted-foreground">
         <TiptapRenderer :content="article.body" />
       </div>
     </div>
 
     <!-- Author Info -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h3 class="text-sm font-medium text-gray-700 mb-3">Article Info</h3>
+    <div class="rounded-lg shadow-sm border p-6">
+      <h3 class="text-sm font-bold mb-3">Article Info</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h4 class="text-sm font-medium text-gray-700">Created</h4>
-          <p class="text-sm text-gray-900">
+          <h4 class="text-sm font-medium">Created</h4>
+          <p class="text-sm text-muted-foreground">
             {{ formatDate(article.created_at) }}
-            <span v-if="article.created_by" class="text-gray-500">
+            <span v-if="article.created_by" class="italic text-accent-foreground">
               by {{ article.created_by.name }}
             </span>
           </p>
         </div>
         <div>
-          <h4 class="text-sm font-medium text-gray-700">Last Updated</h4>
-          <p class="text-sm text-gray-900">
+          <h4 class="text-sm font-medium">Last Updated</h4>
+          <p class="text-sm text-muted-foreground">
             {{ formatDate(article.updated_at) }}
-            <span v-if="article.updated_by" class="text-gray-500">
+            <span v-if="article.updated_by" class="italic text-accent-foreground">
               by {{ article.updated_by.name }}
             </span>
           </p>
@@ -134,23 +137,23 @@
     </div>
 
     <!-- Public URL -->
-    <div v-if="article.is_published" class="bg-blue-50 rounded-lg border border-blue-200 p-4">
+    <div v-if="article.is_published" class="bg-primary-foreground  rounded-lg border border-accent-foreground/10 p-4">
       <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-sm font-medium text-blue-800">Public URL</h3>
-          <p class="text-sm text-blue-600 mt-1">
+        <div class="text-accent-foreground">
+          <h3 class="text-sm font-bold">Public URL</h3>
+          <p class="text-sm mt-1">
             This article is publicly accessible at:
           </p>
-          <a 
-            :href="publicUrl" 
+          <a
+            :href="publicUrl"
             target="_blank"
-            class="text-sm text-blue-600 hover:text-blue-800 underline font-mono bg-white px-2 py-1 rounded mt-2 inline-block"
+            class="text-sm text-blue-600 hover:text-blue-800 dark:text-violet-400 dark:hover:text-violet-500 underline font-mono px-2 py-1 rounded mt-2 inline-block"
           >
             {{ publicUrl }}
           </a>
         </div>
-        <Button 
-          @click="openPublicUrl" 
+        <Button
+          @click="openPublicUrl"
           variant="outline"
           size="sm"
         >
@@ -169,10 +172,10 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import Button from '@/components/ui/button/Button.vue'
 import Heading from '@/components/Heading.vue'
 import TiptapRenderer from '@/components/TiptapRenderer.vue'
-import { 
-  ArrowLeftIcon, 
-  PencilIcon, 
-  ExternalLinkIcon 
+import {
+  ArrowLeftIcon,
+  PencilIcon,
+  ExternalLinkIcon
 } from 'lucide-vue-next'
 
 defineOptions({

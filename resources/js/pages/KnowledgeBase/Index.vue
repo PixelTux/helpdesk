@@ -1,6 +1,4 @@
 <template>
-    <Head title="Knowledge" />
-
   <div class="flex flex-col gap-6 p-6">
     <!-- Search Header -->
     <div class="space-y-6">

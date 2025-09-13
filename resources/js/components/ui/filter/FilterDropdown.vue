@@ -25,7 +25,7 @@
         </div>
         <Tag :value="item" size="sm" class="mr-2" />
         {{ item.label }}
-        <span class="ml-auto text-xs text-gray-500">({{ stats?.[item.value] || 0 }})</span>
+        <span class="ml-auto text-xs text-muted-foreground">({{ stats?.[item.value] || 0 }})</span>
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

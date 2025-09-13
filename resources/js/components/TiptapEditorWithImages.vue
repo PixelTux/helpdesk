@@ -1,7 +1,7 @@
 <template>
   <div class="tiptap-editor-enhanced">
     <!-- Toolbar -->
-    <div class="toolbar border-b border-gray-200 p-2 flex gap-1 flex-wrap">
+    <div class="toolbar border-b border-accent-foreground/10 p-2 flex gap-1 flex-wrap">
       <button
         type="button"
         @click="editor?.chain().focus().toggleBold().run()"
@@ -11,7 +11,7 @@
       >
         <strong>B</strong>
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleItalic().run()"
@@ -21,7 +21,7 @@
       >
         <em>I</em>
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleCode().run()"
@@ -31,9 +31,9 @@
       >
         &lt;/&gt;
       </button>
-      
-      <div class="border-l border-gray-300 mx-1 h-6"></div>
-      
+
+      <div class="border-l border-accent-foreground/15 mx-1 h-6"></div>
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleHeading({ level: 1 }).run()"
@@ -43,7 +43,7 @@
       >
         H1
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleHeading({ level: 2 }).run()"
@@ -53,7 +53,7 @@
       >
         H2
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleHeading({ level: 3 }).run()"
@@ -63,9 +63,9 @@
       >
         H3
       </button>
-      
-      <div class="border-l border-gray-300 mx-1 h-6"></div>
-      
+
+      <div class="border-l border-accent-foreground/15 mx-1 h-6"></div>
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleBulletList().run()"
@@ -75,7 +75,7 @@
       >
         •
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleOrderedList().run()"
@@ -85,9 +85,9 @@
       >
         1.
       </button>
-      
-      <div class="border-l border-gray-300 mx-1 h-6"></div>
-      
+
+      <div class="border-l border-accent-foreground/15 mx-1 h-6"></div>
+
       <button
         type="button"
         @click="addLink"
@@ -97,7 +97,7 @@
       >
         🔗
       </button>
-      
+
       <button
         type="button"
         @click="triggerImageUpload"
@@ -106,7 +106,7 @@
       >
         🖼️
       </button>
-      
+
       <input
         ref="fileInput"
         type="file"
@@ -115,12 +115,12 @@
         class="hidden"
       />
     </div>
-    
+
     <!-- Editor Content -->
     <editor-content :editor="editor" class="editor-content" />
-    
+
     <!-- Loading indicator for image upload -->
-    <div v-if="uploading" class="p-2 text-sm text-gray-500 border-t">
+    <div v-if="uploading" class="p-2 text-sm text-muted-foreground border-t">
       Uploading image...
     </div>
   </div>
@@ -193,7 +193,7 @@ onBeforeUnmount(() => {
 
 const addLink = () => {
   const url = window.prompt('URL')
-  
+
   if (url) {
     editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }
@@ -206,13 +206,13 @@ const triggerImageUpload = () => {
 const handleImageUpload = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
-  
+
   uploading.value = true
-  
+
   try {
     const formData = new FormData()
     formData.append('image', file)
-    
+
     const response = await fetch(route('admin.knowledge-base.upload-image'), {
       method: 'POST',
       body: formData,
@@ -221,9 +221,9 @@ const handleImageUpload = async (event) => {
         'X-Requested-With': 'XMLHttpRequest'
       }
     })
-    
+
     const data = await response.json()
-    
+
     if (data.success) {
       editor.value?.chain().focus().setImage({ src: data.url }).run()
     } else {
@@ -250,9 +250,9 @@ defineExpose({
 
 <style scoped>
 .tiptap-editor-enhanced {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-sidebar-border);
   border-radius: 0.5rem;
-  background: white;
+  background: var(--color-accent);
   overflow: hidden;
 }
 
@@ -264,9 +264,9 @@ defineExpose({
   padding: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
-  background-color: white;
-  border: 1px solid #d1d5db;
+  color: var(--color-primary);
+  background-color: var(--color-primary-foreground);
+  border: 1px solid var(--color-sidebar-border);
   border-radius: 0.375rem;
   transition: all 0.2s;
   min-width: 2.5rem;
@@ -278,19 +278,19 @@ defineExpose({
 }
 
 .toolbar-btn:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
+  background-color: var(--color-accent);
+  border-color: var(--color-sidebar-foreground);
 }
 
 .toolbar-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 .toolbar-btn.is-active {
-  background-color: #1f2937;
-  color: white;
-  border-color: #1f2937;
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  border-color: var(--color-primary);
 }
 
 .editor-content {
@@ -343,7 +343,7 @@ defineExpose({
 }
 
 :deep(.ProseMirror code) {
-  background-color: #f3f4f6;
+  background-color: var(--color-secondary);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   font-size: 0.875em;
@@ -351,8 +351,8 @@ defineExpose({
 }
 
 :deep(.ProseMirror pre) {
-  background-color: #1f2937;
-  color: #f9fafb;
+  background-color: var(--color-sidebar-foreground);
+  color: var(--color-accent);
   padding: 1rem;
   border-radius: 0.5rem;
   margin: 1rem 0;
@@ -393,7 +393,7 @@ defineExpose({
 }
 
 :deep(.ProseMirror blockquote) {
-  border-left: 4px solid #e5e7eb;
+  border-left: 4px solid var(--color-secondary);
   padding-left: 1rem;
   margin: 1rem 0;
   font-style: italic;
@@ -402,7 +402,7 @@ defineExpose({
 
 /* Selection styles */
 :deep(.ProseMirror .ProseMirror-selectednode) {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-sidebar-ring);
   outline-offset: 2px;
 }
 </style>

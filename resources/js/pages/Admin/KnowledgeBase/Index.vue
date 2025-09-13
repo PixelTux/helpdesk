@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <Heading>Knowledge Base Articles</Heading>
+      <Heading title="Knowledge Base Articles" />
       <div class="flex gap-2">
         <Button @click="createArticle" variant="default">
           <PlusIcon class="w-4 h-4 mr-2" />
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+    <div class="p-4 rounded-lg shadow-sm border">
       <div class="flex flex-wrap gap-4">
         <!-- Search -->
         <div class="flex-1 min-w-64">
@@ -26,13 +26,13 @@
             @input="handleSearch"
           />
         </div>
-        
+
         <!-- Status Filter -->
         <div class="min-w-32">
-          <select 
+          <select
             v-model="filters.status"
             @change="applyFilters"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent bg-sidebar"
           >
             <option value="published">Published</option>
             <option value="draft">Draft</option>
@@ -43,13 +43,18 @@
 
         <!-- Tag Filter -->
         <div class="min-w-32" v-if="tags.length > 0">
-          <select 
+          <select
             v-model="filters.tag"
             @change="applyFilters"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent bg-sidebar"
           >
             <option value="">All Tags</option>
-            <option v-for="tag in tags" :key="tag.id" :value="tag.slug">
+            <option
+                v-for="tag in tags"
+                :key="tag.id"
+                :value="tag.slug"
+                class="dark:bg-sidebar dark:text-primary"
+            >
               {{ tag.name }} ({{ tag.knowledge_base_articles_count }})
             </option>
           </select>
@@ -58,53 +63,53 @@
     </div>
 
     <!-- Articles Table -->
-    <div class="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+    <div class="shadow-sm border rounded-lg overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y">
+          <thead>
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
                   @click="sort('title')">
                 Title
                 <ChevronUpIcon v-if="filters.sort_by === 'title' && filters.sort_dir === 'asc'" class="inline w-4 h-4" />
                 <ChevronDownIcon v-if="filters.sort_by === 'title' && filters.sort_dir === 'desc'" class="inline w-4 h-4" />
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Status
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Tags
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Author
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer"
                   @click="sort('updated_at')">
                 Updated
                 <ChevronUpIcon v-if="filters.sort_by === 'updated_at' && filters.sort_dir === 'asc'" class="inline w-4 h-4" />
                 <ChevronDownIcon v-if="filters.sort_by === 'updated_at' && filters.sort_dir === 'desc'" class="inline w-4 h-4" />
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="article in articles.data" :key="article.id" class="hover:bg-gray-50">
+          <tbody class="divide-y cursor-default">
+            <tr v-for="article in articles.data" :key="article.id" class="hover:bg-muted-foreground/25">
               <td class="px-6 py-4">
-                <div class="text-sm font-medium text-gray-900">
+                <div class="text-sm font-medium">
                   {{ article.title }}
                 </div>
-                <div class="text-sm text-gray-500 truncate max-w-xs">
+                <div class="text-sm text-muted-foreground truncate max-w-xs">
                   {{ article.slug }}
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span 
+                <span
                   :class="{
-                    'bg-green-100 text-green-800': article.is_published,
-                    'bg-yellow-100 text-yellow-800': !article.is_published,
-                    'bg-red-100 text-red-800': article.deleted_at
+                    'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300': article.is_published,
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300': !article.is_published,
+                    'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300': article.deleted_at
                   }"
                   class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"
                 >
@@ -113,58 +118,58 @@
               </td>
               <td class="px-6 py-4">
                 <div class="flex flex-wrap gap-1">
-                  <span 
-                    v-for="tag in article.tags" 
+                  <span
+                    v-for="tag in article.tags"
                     :key="tag.id"
-                    class="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full"
+                    class="inline-flex px-2 py-1 text-xs bg-blue-100 text-red-800 rounded-full"
                   >
                     {{ tag.name }}
                   </span>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">
                 {{ article.created_by?.name || 'Unknown' }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                 {{ formatDate(article.updated_at) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex justify-end gap-2">
-                  <Button 
-                    v-if="!article.deleted_at"
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    v-if="!article.deleted_at && article.is_published"
+                    variant="outline"
+                    size="sm"
                     @click="viewArticle(article.id)"
                   >
                     <EyeIcon class="w-4 h-4" />
                   </Button>
-                  <Button 
+                  <Button
                     v-if="!article.deleted_at"
-                    variant="outline" 
-                    size="sm" 
+                    variant="outline"
+                    size="sm"
                     @click="editArticle(article.id)"
                   >
                     <PencilIcon class="w-4 h-4" />
                   </Button>
-                  <Button 
+                  <Button
                     v-if="!article.deleted_at"
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     @click="deleteArticle(article)"
                   >
                     <TrashIcon class="w-4 h-4" />
                   </Button>
-                  <Button 
+                  <Button
                     v-if="article.deleted_at"
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                     @click="restoreArticle(article.id)"
                   >
                     <RefreshCwIcon class="w-4 h-4" />
                   </Button>
-                  <Button 
+                  <Button
                     v-if="article.deleted_at"
-                    variant="destructive" 
+                    class="text-white primary bg-red-800 hover:bg-red-600 border border-accent hover:border-muted-foreground/25"
                     size="sm"
                     @click="forceDeleteArticle(article.id)"
                   >
@@ -180,7 +185,7 @@
 
     <!-- Pagination -->
     <div v-if="articles.links" class="flex justify-between items-center">
-      <div class="text-sm text-gray-700">
+      <div class="text-sm text-muted-foreground">
         Showing {{ articles.from }} to {{ articles.to }} of {{ articles.total }} results
       </div>
       <div class="flex gap-2">
@@ -198,7 +203,7 @@
 
     <!-- Empty State -->
     <div v-if="articles.data.length === 0" class="text-center py-12">
-      <p class="text-gray-500 mb-4">No articles found</p>
+      <p class="text-muted-foreground mb-4">No articles found</p>
       <Button @click="createArticle">Create your first article</Button>
     </div>
   </div>
@@ -211,13 +216,13 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import Button from '@/components/ui/button/Button.vue'
 import Input from '@/components/ui/input/Input.vue'
 import Heading from '@/components/Heading.vue'
-import { 
-  PlusIcon, 
-  TagIcon, 
-  EyeIcon, 
-  PencilIcon, 
-  TrashIcon, 
-  RefreshCwIcon, 
+import {
+  PlusIcon,
+  TagIcon,
+  EyeIcon,
+  PencilIcon,
+  TrashIcon,
+  RefreshCwIcon,
   XIcon,
   ChevronUpIcon,
   ChevronDownIcon
