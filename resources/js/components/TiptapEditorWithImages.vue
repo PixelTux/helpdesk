@@ -130,7 +130,6 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
-import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
 import { router } from '@inertiajs/vue3'
 
@@ -155,11 +154,12 @@ const uploading = ref(false)
 onMounted(() => {
   editor.value = new Editor({
     extensions: [
-      StarterKit,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-600 underline hover:text-blue-800'
+      StarterKit.configure({
+        link: {
+            openOnClick: false,
+            HTMLAttributes: {
+              class: 'text-blue-600 underline hover:text-blue-800'
+            }
         }
       }),
       Image.configure({
@@ -169,7 +169,7 @@ onMounted(() => {
         }
       })
     ],
-    content: props.modelValue,
+    content: props.modelValue || '<p></p>',
     onUpdate: ({ editor }) => {
       const json = editor.getJSON()
       emit('update:modelValue', json)

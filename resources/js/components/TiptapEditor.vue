@@ -76,7 +76,6 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
 
 const props = defineProps({
   modelValue: {
@@ -101,12 +100,13 @@ const editor = ref(null);
 onMounted(() => {
   editor.value = new Editor({
     extensions: [
-      StarterKit,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-600 underline',
-        },
+        StarterKit.configure({
+        link:{
+            openOnClick: false,
+            HTMLAttributes: {
+                class: 'text-blue-600 underline',
+            },
+        }
       }),
     ],
     content: props.modelValue,
