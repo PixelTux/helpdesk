@@ -64,9 +64,9 @@
           v-model="status"
           @change="(e) => updateStatus((e.target as HTMLSelectElement).value)"
         >
-          <option 
-            v-for="option in statusOptions" 
-            :key="option.value" 
+          <option
+            v-for="option in statusOptions"
+            :key="option.value"
             :value="option.value"
             :class="getStatusClass(option.value)"
           >
@@ -82,9 +82,9 @@
           v-model="priority"
           @change="(e) => updatePriority((e.target as HTMLSelectElement).value)"
         >
-          <option 
-            v-for="option in priorityOptions" 
-            :key="option.value" 
+          <option
+            v-for="option in priorityOptions"
+            :key="option.value"
             :value="option.value"
             :class="getPriorityClass(option.value)"
           >
@@ -101,7 +101,7 @@ import { ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
 
 // Import the generated ConversationData type
-import '../../../../types/generated.d';
+import '@/../types/generated.d';
 
 // Use the generated ConversationData type from the backend
 type ConversationDataType = App.Data.ConversationData;
@@ -133,8 +133,8 @@ const emit = defineEmits<{
 
 // Refs
 // Handle assigned_to as possibly an array or an object with id
-const assignedTo = Array.isArray(props.conversation.assigned_to) 
-  ? props.conversation.assigned_to[0] 
+const assignedTo = Array.isArray(props.conversation.assigned_to)
+  ? props.conversation.assigned_to[0]
   : props.conversation.assigned_to;
 const selectedUser = ref(assignedTo?.id || '');
 
@@ -145,7 +145,7 @@ const statusValue = Array.isArray(props.conversation.status) && props.conversati
 const priorityValue = Array.isArray(props.conversation.priority) && props.conversation.priority.length > 0
   ? props.conversation.priority[0]?.value || ''
   : '';
-  
+
 const status = ref<string>(statusValue);
 const priority = ref<string>(priorityValue);
 
@@ -172,8 +172,8 @@ function assignToUser() {
     },
     onError: () => {
       // Reset the select on error using the same logic as initialization
-      const assignedTo = Array.isArray(props.conversation.assigned_to) 
-        ? props.conversation.assigned_to[0] 
+      const assignedTo = Array.isArray(props.conversation.assigned_to)
+        ? props.conversation.assigned_to[0]
         : props.conversation.assigned_to;
       selectedUser.value = assignedTo?.id || '';
     }
@@ -183,9 +183,9 @@ function assignToUser() {
 function updateStatus(newStatus: string) {
   // Use strict equality check with proper type handling
   if (String(status.value) === String(newStatus)) return;
-  
+
   status.value = newStatus;
-  
+
   // Ensure conversation.id is treated as a string or number, not an array
   const conversationId = String(props.conversation.id);
   router.post(route('conversations.update-status', { conversation: conversationId }), {
@@ -209,9 +209,9 @@ function updateStatus(newStatus: string) {
 function updatePriority(newPriority: string) {
   // Use strict equality check with proper type handling
   if (String(priority.value) === String(newPriority)) return;
-  
+
   priority.value = newPriority;
-  
+
   // Ensure conversation.id is treated as a string or number, not an array
   const conversationId = String(props.conversation.id);
   router.post(route('conversations.update-priority', { conversation: conversationId }), {

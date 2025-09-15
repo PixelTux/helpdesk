@@ -3,15 +3,15 @@
     <div v-for="message in messages" :key="message.id" class="mb-4 last:mb-0">
       <CustomerBubble
         v-if="message.type === 'customer'"
-        :message="message as CustomerMessage"
+        :message="message"
       />
       <AgentBubble
         v-else-if="message.type === 'agent'"
-        :message="message as AgentMessage"
+        :message="message"
       />
       <InternalNoteBubble
         v-else-if="message.type === 'internal'"
-        :message="message as InternalMessage"
+        :message="message"
       />
     </div>
   </div>
@@ -26,24 +26,26 @@ import InternalNoteBubble from '@/components/helpdesk/bubbles/InternalNoteBubble
 // Define message type interfaces with more specific types than the generated ones
 interface CustomerMessage extends App.Data.MessageData {
   type: 'customer';
+  message_owner_name?: string;
 }
 
 interface AgentMessage extends App.Data.MessageData {
   type: 'agent';
-  agent_name?: string;
 }
 
 interface InternalMessage extends App.Data.MessageData {
   type: 'internal';
-  message_owner_name?: string;
 }
+
+// Union type
+type Message = CustomerMessage | AgentMessage | InternalMessage;
 
 // Define props
 const props = defineProps<{
-  messages: Array<App.Data.MessageData & {
+  messages: Readonly<Message[] & {
     message_owner_name?: string;
     agent_name?: string;
-  }>;
+}>;
 }>();
 
 // Refs

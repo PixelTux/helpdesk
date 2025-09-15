@@ -1,20 +1,17 @@
 <template>
   <div class="flex flex-col items-start">
-    <div class="rounded-lg p-4 max-w-2xl"
-         style="background-color: hsl(var(--neutral-bg, 240 10% 96%)); border: 1px solid hsl(var(--neutral-border, 240 10% 90%)); color: hsl(var(--neutral-fg, 240 9% 9%));">
+    <div class="rounded-r-lg p-4 max-w-2xl bg-chart-2/15 border-1 border-l-chart-2 text-primary">
       <!-- Message Header -->
-      <div class="flex items-center gap-3 mb-3">
+      <div class="flex items-center gap-3 mb-3 cursor-default">
         <div class="flex items-center gap-2">
           <!-- Customer icon -->
-          <div class="h-6 w-6 rounded-full flex items-center justify-center"
-               style="background-color: hsl(var(--neutral-bg, 240 10% 96%) / 0.7); color: hsl(var(--neutral-fg, 240 9% 9%));">
+          <div class="h-6 w-6 rounded-full flex items-center justify-center bg-chart-2 text-primay">
             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
           <span class="font-semibold text-sm">{{ message.message_owner_name || 'Customer' }}</span>
-          <span class="text-xs px-1.5 py-0.5 rounded-md border"
-                style="background-color: hsl(var(--neutral-bg, 240 10% 96%) / 0.2); color: hsl(var(--neutral-fg, 240 9% 9%)); border-color: hsl(var(--neutral-border, 240 10% 90%) / 0.3);">
+          <span class="text-xs px-1.5 py-0.5 rounded-md border bg-input/80 text-primary">
             Customer
           </span>
         </div>

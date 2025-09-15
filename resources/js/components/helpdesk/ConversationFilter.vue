@@ -1,19 +1,19 @@
 <template>
-  <div class="p-4 space-y-4 bg-gray-50">
+  <div class="p-4 space-y-4 bg-sidebar border-1 rounded-md -mt-1 mb-3">
     <!-- Collapsible header - only show if not controlled externally -->
-    <button 
-      v-if="!hideCollapseButton" 
-      @click="toggleFilterCollapse" 
-      class="w-full flex justify-between items-center bg-gray-100 p-2 font-medium"
+    <button
+      v-if="!hideCollapseButton"
+      @click="toggleFilterCollapse"
+      class="w-full flex justify-between items-center font-medium"
     >
       Filters
       <Icon :name="filterCollapsed ? 'chevron-down' : 'chevron-up'" class="h-4 w-4" />
     </button>
     <div v-show="!filterCollapsed || hideCollapseButton" class="space-y-4">
-    
+
     <!-- Search Input -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Search</label>
+      <label class="text-sm font-medium">Search</label>
       <Input
         v-model="searchQuery"
         type="text"
@@ -25,7 +25,7 @@
 
     <!-- Quick Filters -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Quick Filters</label>
+      <label class="text-sm font-medium">Quick Filters</label>
       <div class="flex flex-wrap gap-2">
         <Button
           variant="outline"
@@ -33,11 +33,11 @@
           :class="{ 'bg-blue-50 border-blue-200': filters.unread }"
           @click="toggleUnread"
         >
-          <div class="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+          <div class="w-2 h-2 bg-sidebar-ring rounded-full mr-1"></div>
           Unread
-          <span class="ml-1 text-xs text-gray-500">({{ stats?.unread || 0 }})</span>
+          <span class="ml-1 text-xs text-muted-foreground">({{ stats?.unread || 0 }})</span>
         </Button>
-        
+
         <Button
           variant="outline"
           size="sm"
@@ -52,7 +52,7 @@
 
     <!-- Status Filter -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Status</label>
+      <label class="text-sm font-medium">Status</label>
       <FilterDropdown
         :selected-items="filters.status"
         :options="filterOptions?.statuses || []"
@@ -64,7 +64,7 @@
 
     <!-- Priority Filter -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-gray-700">Priority</label>
+      <label class="text-sm font-medium">Priority</label>
       <FilterDropdown
         :selected-items="filters.priority"
         :options="filterOptions?.priorities || []"
@@ -87,7 +87,7 @@
     </div>
 
     <!-- Stats Summary -->
-    <div class="text-xs text-gray-500 pt-2 border-t border-gray-200">
+    <div class="text-xs text-muted-foreground pt-2 border-t border-active cursor-default">
       Showing {{ filteredCount || 0 }} of {{ stats?.total || 0 }} conversations
     </div>
     </div>

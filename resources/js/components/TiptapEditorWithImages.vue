@@ -257,7 +257,7 @@ defineExpose({
 }
 
 .tiptap-editor-enhanced.error {
-  border-color: #ef4444;
+  border-color: var(--destructive);
 }
 
 .toolbar-btn {
@@ -278,8 +278,8 @@ defineExpose({
 }
 
 .toolbar-btn:hover {
-  background-color: var(--color-accent);
-  border-color: var(--color-sidebar-foreground);
+  background-color: var(--muted);
+  border-color: var(--ring);
 }
 
 .toolbar-btn:focus {
@@ -290,7 +290,7 @@ defineExpose({
 .toolbar-btn.is-active {
   background-color: var(--color-primary);
   color: var(--color-accent);
-  border-color: var(--color-primary);
+  border-color: var(--muted);
 }
 
 .editor-content {
@@ -343,7 +343,8 @@ defineExpose({
 }
 
 :deep(.ProseMirror code) {
-  background-color: var(--color-secondary);
+  background-color: var(--muted-foreground);
+  color: var(--muted);
   padding: 0.125rem 0.375rem;
   border-radius: 0.25rem;
   font-size: 0.875em;

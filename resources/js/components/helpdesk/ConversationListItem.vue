@@ -1,30 +1,32 @@
 <template>
   <div
-    class="border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors"
+    class="border-b border-accent hover:bg-input cursor-pointer transition-colors"
     :class="{
-      'bg-blue-50': isActive,
+      'bg-secondary hover:bg-sidebar': isActive,
       'font-semibold': conversation.unread && !isActive
     }"
     @click="$emit('click')"
   >
-    <div class="p-4">
+    <div class="p-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2 flex-1 min-w-0">
           <!-- Unread indicator -->
           <div
             v-if="conversation.unread"
-            class="w-2 h-2 bg-blue-500 rounded-full shrink-0"
+            class="w-2 h-2 bg-sidebar-ring rounded-full shrink-0"
             title="Unread conversation"
           ></div>
           <h3 class="font-medium truncate" :class="{
-            'text-blue-600': isActive,
+            'text-sidebar-ring': isActive,
             'font-bold': conversation.unread && !isActive
           }">
             {{ conversation.subject }}
           </h3>
         </div>
-        <div class="flex items-center space-x-2 text-xs text-gray-500 ml-2">
-          <span class="px-2 py-1 rounded bg-gray-100 font-mono">
+        <div class="flex items-center space-x-2 text-xs text-muted-foreground ml-2">
+          <span class="px-2 pt-1 rounded bg-primary font-mono text-secondary"
+                :class="{'bg-sidebar-ring': conversation.unread && !isActive
+          }">
             #{{ conversation.case_number }}
           </span>
           <span>
@@ -33,10 +35,10 @@
         </div>
       </div>
 
-      <div class="flex items-center text-sm text-gray-600 mt-1">
+      <div class="flex items-center text-sm text-secondary-foreground mt-1">
         <span class="truncate">{{ conversation.contact.name }}</span>
         <span class="mx-1">•</span>
-        <span class="truncate text-gray-500">{{ conversation.contact.company?.name || 'No company' }}</span>
+        <span class="truncate text-muted-foreground">{{ conversation.contact.company?.name || 'No company' }}</span>
         <template v-if="conversation.assigned_to">
           <span class="mx-1">•</span>
           <span class="truncate text-blue-600 text-xs">Assigned to {{ conversation.assigned_to.name }}</span>
@@ -55,7 +57,7 @@
 import { defineProps, defineEmits } from 'vue';
 import { Tag } from '@/components/ui/tag';
 // Import generated types
-import '../../../types/generated.d';
+import '@/../types/generated.d';
 
 // Define props
 const props = defineProps<{

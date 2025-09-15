@@ -13,15 +13,15 @@
 
     <div class="flex h-screen">
       <!-- Sidebar with conversation list -->
-      <div class="w-80 border-r border-gray-200 h-full flex flex-col overflow-hidden">
-        <div class="p-4 border-b border-gray-200 shrink-0">
+      <div class="w-80 border-r pr-3 h-full flex flex-col overflow-hidden">
+        <div class="p-4 border-b shrink-0">
           <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold">Conversations</h2>
             <!-- Collapse controls moved here -->
             <div class="flex items-center gap-2">
               <button
                 @click="toggleFilterCollapse"
-                class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+                class="cursor-pointer p-2 rounded-md bg-input border-1 border-sidebar-accent hover:bg-primary-foreground hover:border-sidebar-border transition-colors"
                 :title="filterCollapsed ? 'Show Filters' : 'Hide Filters'"
               >
                 <svg v-if="filterCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,7 +35,7 @@
               <button
                 v-if="conversation"
                 @click="toggleReplyFormCollapse"
-                class="p-2 rounded-md hover:bg-gray-100 transition-colors"
+                class="cursor-pointer p-2 rounded-md bg-input border-1 border-sidebar-accent hover:bg-primary-foreground hover:border-sidebar-border transition-colors"
                 :title="replyFormCollapsed ? 'Expand Reply Form' : 'Collapse Reply Form'"
               >
                 <svg v-if="replyFormCollapsed" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@
         </div>
 
         <!-- Filter section - now collapsible from sidebar header -->
-        <div v-if="!filterCollapsed" class="border-b border-gray-200 shrink-0">
+        <div v-if="!filterCollapsed" class="shrink-0">
           <ConversationFilter
             :currentFilters="filters.current"
             :filterOptions="filters.options"
@@ -62,7 +62,7 @@
 
         <!-- Conversation list - now gets full remaining space -->
         <div class="overflow-y-auto flex-1">
-          <div v-if="conversations.data.length === 0" class="p-4 text-center text-gray-500">
+          <div v-if="conversations.data.length === 0" class="p-4 text-center text-muted-foreground cursor-default">
             No conversations found
           </div>
           <div v-else>
@@ -73,7 +73,7 @@
               :is-active="conversation?.id === conv.id"
               @click="navigateToConversationPage(conv)"
             />
-            
+
             <!-- Infinite Scroll Trigger -->
             <div
               v-if="hasMorePages"
@@ -81,16 +81,16 @@
               class="flex items-center justify-center p-4"
             >
               <div v-if="isLoadingMore" class="flex items-center space-x-2">
-                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                <span class="text-sm text-gray-500">Loading more conversations...</span>
+                <div class="animate-spin rounded-full h-4 w-4 border-b-2"></div>
+                <span class="text-sm text-muted-foreground">Loading more conversations...</span>
               </div>
-              <div v-else class="text-xs text-gray-400">
+              <div v-else class="text-xs text-muted-foreground">
                 Scroll to load more...
               </div>
             </div>
             <div
               v-else-if="conversations.data.length > 0"
-              class="text-center py-6 text-gray-600"
+              class="text-center py-6 text-muted-foreground/50 cursor-default"
             >
               You've reached the end!
             </div>
@@ -99,8 +99,8 @@
       </div>
 
       <!-- Main content area with conversation details -->
-      <div class="flex-1 h-full overflow-hidden">
-        <div v-if="!conversation" class="h-full flex items-center justify-center text-gray-500">
+      <div class="flex-1 ml-3 h-full overflow-hidden">
+        <div v-if="!conversation" class="h-full flex items-center justify-center text-muted ">
           <div class="text-center">
             <h3 class="text-lg font-medium mb-2">No conversation selected</h3>
             <p>Select a conversation from the list to view details</p>
@@ -193,12 +193,12 @@ const hasMorePages = computed(() => {
 // Load more conversations function
 const loadMoreConversations = () => {
   if (isLoadingMore.value || !hasMorePages.value) return;
-  
+
   isLoadingMore.value = true;
   const nextPage = props.conversations.current_page + 1;
-  
+
   // Loading next page of conversations
-  
+
   router.get('/helpdesk', {
     page: nextPage,
     ...props.filters.current
@@ -222,22 +222,22 @@ const loadMoreConversations = () => {
 // Watch for changes in conversations data and merge new pages
 watch(() => page.props.conversations, (newConversations, oldConversations) => {
   if (!newConversations || !oldConversations) return;
-  
+
   // Check if this is an infinite scroll load (new page > old page)
   if (newConversations.current_page > oldConversations.current_page) {
     // Merge conversations from new page with existing conversations
-    
+
     // Merge the new conversations with the existing ones
     const existingIds = new Set((oldConversations.data || []).map(c => c.id));
     const newData = (newConversations.data || []).filter(c => !existingIds.has(c.id));
-    
+
     if (newData.length > 0) {
       // Update the conversations data by merging
       const mergedConversations = {
         ...newConversations,
         data: [...(oldConversations.data || []), ...newData]
       };
-      
+
       // Update the page props directly to trigger reactivity
       Object.assign(page.props.conversations, mergedConversations);
     }
@@ -262,7 +262,7 @@ onMounted(() => {
         threshold: 0.1
       }
     );
-    
+
     observer.observe(loadTrigger.value);
   }
 });

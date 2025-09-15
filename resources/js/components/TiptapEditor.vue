@@ -1,7 +1,7 @@
 <template>
   <div class="tiptap-editor">
     <!-- Toolbar -->
-    <div class="toolbar border-b border-gray-200 p-1 flex gap-1 flex-wrap">
+    <div class="toolbar border-b border-accent-foreground/10 p-1 flex gap-1 flex-wrap">
       <button
         type="button"
         @click="editor?.chain().focus().toggleBold().run()"
@@ -11,7 +11,7 @@
       >
         <strong>B</strong>
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleItalic().run()"
@@ -21,7 +21,7 @@
       >
         <em>I</em>
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleCode().run()"
@@ -31,9 +31,9 @@
       >
         &lt;/&gt;
       </button>
-      
-      <div class="border-l border-gray-300 mx-0.5 h-6"></div>
-      
+
+      <div class="border-l border-accent-foreground/15 mx-0.5 h-6"></div>
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleBulletList().run()"
@@ -43,7 +43,7 @@
       >
         •
       </button>
-      
+
       <button
         type="button"
         @click="editor?.chain().focus().toggleOrderedList().run()"
@@ -53,9 +53,9 @@
       >
         1.
       </button>
-      
-      <div class="border-l border-gray-300 mx-0.5 h-6"></div>
-      
+
+      <div class="border-l border-accent-foreground/15 mx-0.5 h-6"></div>
+
       <button
         type="button"
         @click="addLink"
@@ -66,7 +66,7 @@
         🔗
       </button>
     </div>
-    
+
     <!-- Editor Content -->
     <editor-content :editor="editor" class="editor-content" />
   </div>
@@ -113,7 +113,7 @@ onMounted(() => {
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       emit('update:modelValue', html);
-      
+
       // Check if editor is empty
       const isEmpty = html === '<p></p>' || !html.replace(/<[^>]*>/g, '').trim();
       emit('update:isEmpty', isEmpty);
@@ -165,7 +165,7 @@ const focus = () => {
 
 const addLink = () => {
   const url = window.prompt('URL');
-  
+
   if (url) {
     editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
   }
@@ -183,39 +183,42 @@ defineExpose({
 
 <style scoped>
 .tiptap-editor {
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  background: white;
+  border: 1px solid var(--color-sidebar-border);
+  border-radius: 0.5rem;
+  background: var(--color-accent);
 }
 
 .toolbar-btn {
-  padding: 0.375rem 0.5rem;
-  font-size: 0.75rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s, box-shadow 0.2s;
-  min-width: 2rem;
-  height: 2rem;
+  color: var(--color-primary);
+  background-color: var(--color-primary-foreground);
+  border: 1px solid var(--color-sidebar-border);
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+  min-width: 2.5rem;
+  height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .toolbar-btn:hover {
-  background-color: #f9fafb;
+  background-color: var(--muted);
+  border-color: var(--ring);
 }
 
 .toolbar-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 .toolbar-btn.is-active {
-  background-color: #111827;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-accent);
+  border-color: var(--muted);
 }
 
 .editor-content {
@@ -247,7 +250,8 @@ defineExpose({
 }
 
 :deep(.ProseMirror code) {
-  background-color: #f3f4f6;
+  background-color: var(--muted-foreground);
+  color: var(--muted);
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
   font-size: 0.875em;

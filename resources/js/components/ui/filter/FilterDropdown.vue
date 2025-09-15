@@ -18,13 +18,16 @@
         @click="toggleItem(item.value)"
         class="flex items-center cursor-pointer"
       >
-        <div class="flex items-center w-4 h-4 mr-2">
-          <svg v-if="selectedItems?.includes(item.value)" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        <div class="flex items-center w-4 h-4 mr-2 bg-primary/20 rounded">
+          <svg v-if="selectedItems?.includes(item.value)"
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 rounded stroke-sidebar-ring" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
           </svg>
         </div>
         <Tag :value="item" size="sm" class="mr-2" />
-        {{ item.label }}
         <span class="ml-auto text-xs text-muted-foreground">({{ stats?.[item.value] || 0 }})</span>
       </DropdownMenuItem>
     </DropdownMenuContent>

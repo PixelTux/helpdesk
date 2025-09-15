@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col h-full" @click="closeMoreMenu">
+  <div class="flex flex-col h-full bg-accent" @click="closeMoreMenu">
     <!-- Header Component - Fixed at top -->
-    <ConversationHeader 
-      :conversation="conversation" 
-      :users="users" 
+    <ConversationHeader
+      :conversation="conversation"
+      :users="users"
       :statusOptions="statusOptions"
       :priorityOptions="priorityOptions"
       :isGeneratingAI="isGeneratingAI"
@@ -16,8 +16,8 @@
     <MessagesContainer :messages="messages" />
 
     <!-- Reply Section Component - Fixed at bottom -->
-    <ReplySection 
-      :conversation="conversation" 
+    <ReplySection
+      :conversation="conversation"
       ref="replySection"
     />
   </div>
@@ -31,7 +31,7 @@ import MessagesContainer from './conversation/MessagesContainer.vue';
 import ReplySection from './conversation/ReplySection.vue';
 
 // Import the generated ConversationData type
-import '../../../types/generated.d';
+import '@/../types/generated.d';
 
 // Use the generated ConversationData type from the backend
 type ConversationDataType = App.Data.ConversationData;
@@ -83,31 +83,31 @@ function handlePriorityUpdated(priority: string) {
 
 async function generateAIResponse() {
   if (isGeneratingAI.value) return;
-  
+
   // Get the latest customer message
   const customerMessages = props.messages.filter(m => m.type === 'customer');
   if (customerMessages.length === 0) {
     return;
   }
-  
+
   const latestMessage = customerMessages[customerMessages.length - 1];
   // Strip HTML tags and get plain text
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = latestMessage.content;
   const query = tempDiv.textContent || tempDiv.innerText || '';
-  
+
   if (!query.trim()) {
     return;
   }
-  
+
   // Ensure reply tab is active and form is expanded
   if (replySection.value) {
     replySection.value.setActiveTab('reply');
     replySection.value.expandForm();
   }
-  
+
   isGeneratingAI.value = true;
-  
+
   try {
     const requestData = {
       query: query.trim(),
@@ -118,7 +118,7 @@ async function generateAIResponse() {
       },
       messages: props.messages
     };
-    
+
     const response = await fetch(route('ai.answer.generate'), {
       method: 'POST',
       headers: {
@@ -127,22 +127,22 @@ async function generateAIResponse() {
       },
       body: JSON.stringify(requestData)
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
     console.log('[AI Debug] Full response structure:', data);
-    
+
     // Handle the nested data structure correctly
     if (data.success && data.data && data.data.answer) {
       console.log('[AI Debug] Response received successfully:', data.data.answer.substring(0, 50) + '...');
-      
+
       // Format the content for TipTap
       const content = data.data.answer;
       const formattedContent = content.replace(/\n/g, '<br>');
-      
+
       // Set the content in the reply section
       if (replySection.value) {
         replySection.value.setReplyContent(formattedContent);

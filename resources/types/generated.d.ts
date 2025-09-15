@@ -79,7 +79,7 @@ conversation_id: string;
 type: App.Enums.Type;
 content: string;
 created_at: string;
-message_owner_name: string | null;
+message_owner_name?: string | null;
 };
 export type SentEmailDto = {
 message_id: string;
