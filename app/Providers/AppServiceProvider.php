@@ -13,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Http;
 use App\Models\KnowledgeBaseArticle;
 use App\Observers\KnowledgeBaseArticleObserver;
-use DB;
+use \Illuminate\Support\Facades\DB;
 
 class AppServiceProvider extends ServiceProvider
 {

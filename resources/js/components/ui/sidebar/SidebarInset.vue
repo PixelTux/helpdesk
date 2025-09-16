@@ -16,7 +16,7 @@ const props = defineProps<{
       props.class,
     )"
   >
-    <div class="m-6">
+    <div>
         <slot />
     </div>
   </main>

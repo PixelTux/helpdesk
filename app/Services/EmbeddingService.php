@@ -23,17 +23,17 @@ class EmbeddingService
             if (!$response->successful()) {
                 $errorData = $response->json();
                 $errorMessage = $errorData['error']['message'] ?? 'Unknown OpenAI API error';
-                
+
                 Log::error('OpenAI embedding API error: ' . $errorMessage);
                 return null;
             }
 
             $data = $response->json();
-            
+
             if (isset($data['data'][0]['embedding'])) {
                 return $data['data'][0]['embedding'];
             }
-            
+
             return null;
         } catch (Exception $e) {
             Log::error('Embedding generation failed: ' . $e->getMessage());
@@ -55,7 +55,7 @@ class EmbeddingService
         return $embeddings;
     }
 
-    public function chunkText(string $text, int $chunkSize = null, int $overlap = null): array
+    public function chunkText(string $text, ?int $chunkSize = null, ?int $overlap = null): array
     {
         $chunkSize = $chunkSize ?? config('ai.embeddings.chunk_size', 1000);
         $overlap = $overlap ?? config('ai.embeddings.chunk_overlap', 200);
@@ -95,10 +95,10 @@ class EmbeddingService
         $chunks = $this->chunkText($text);
         $results = [];
 
-        foreach ($chunks as $index => $chunk) {            
+        foreach ($chunks as $index => $chunk) {
             $embedding = $this->generateEmbedding($chunk);
 
-            if ($embedding) {                
+            if ($embedding) {
                 $results[] = [
                     'embedding' => $embedding,
                     'text' => $chunk,

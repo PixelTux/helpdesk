@@ -13,7 +13,7 @@
             @keyup.enter="generateAnswer"
             :disabled="isGenerating"
           />
-          <Button 
+          <Button
             @click="generateAnswer"
             :disabled="isGenerating || !question.trim()"
             class="whitespace-nowrap"
@@ -26,12 +26,12 @@
       </div>
 
       <!-- Error Display -->
-      <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+      <div v-if="error" class="bg-red-50/90 border border-red-200/90 rounded-lg p-4">
         <div class="flex items-start">
           <Icon name="alert-circle" class="w-5 h-5 text-red-500 mt-0.5 mr-3" />
           <div>
-            <h4 class="text-sm font-medium text-red-800">Error</h4>
-            <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+            <h4 class="text-sm font-medium text-red-800/80">Error</h4>
+            <p class="text-sm text-red-600/90 mt-1">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
               Thinking...
             </div>
           </div>
-          
+
           <!-- Typing indicator -->
           <div v-if="isGenerating && streamingAnswer" class="flex items-center mt-2">
             <div class="flex space-x-1">
@@ -219,7 +219,7 @@ const generateStreamingAnswer = async () => {
   const requestData: any = {
     query: question.value.trim()
   }
-  
+
   // Add conversation context if available
   if (props.conversation) {
     requestData.conversation_id = props.conversation.id
@@ -228,12 +228,12 @@ const generateStreamingAnswer = async () => {
       contact: props.conversation.contact
     }
   }
-  
+
   // Add messages if available
   if (props.messages) {
     requestData.messages = props.messages
   }
-  
+
   const response = await fetch(route('ai.answer.stream'), {
     method: 'POST',
     headers: {
@@ -253,21 +253,21 @@ const generateStreamingAnswer = async () => {
   }
 
   const decoder = new TextDecoder()
-  
+
   try {
     while (true) {
       const { done, value } = await reader.read()
-      
+
       if (done) break
-      
+
       const chunk = decoder.decode(value)
       const lines = chunk.split('\n')
-      
+
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           try {
             const data = JSON.parse(line.slice(6))
-            
+
             if (data.type === 'start') {
               sources.value = data.sources || []
               timestamp.value = data.timestamp
@@ -293,7 +293,7 @@ const generateStaticAnswer = async () => {
   const requestData: any = {
     query: question.value.trim()
   }
-  
+
   // Add conversation context if available
   if (props.conversation) {
     requestData.conversation_id = props.conversation.id
@@ -302,12 +302,12 @@ const generateStaticAnswer = async () => {
       contact: props.conversation.contact
     }
   }
-  
+
   // Add messages if available
   if (props.messages) {
     requestData.messages = props.messages
   }
-  
+
   const response = await fetch(route('ai.answer.generate'), {
     method: 'POST',
     headers: {

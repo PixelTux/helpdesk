@@ -1,77 +1,98 @@
 <?php
 
+use App\Http\Controllers\Admin\KnowledgeBaseController as AdminKnowledgeBaseController;
+use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\AIAnswerController;
 use App\Http\Controllers\ConversationController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\StatusController;
 use App\Http\Controllers\KnowledgeBaseController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PostmarkWebhookController;
+use App\Http\Controllers\StatusController;
+use App\LocalAi\Chat;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', fn() => Inertia::render('Welcome'))->name('home');
 
-// Postmark webhook for inbound emails (no auth required)
-Route::post('/webhooks/postmark/inbound', [App\Http\Controllers\PostmarkWebhookController::class, 'handleInbound'])
-    ->name('postmark.webhook.inbound');
-
-// Public Knowledge Base routes
-Route::prefix('knowledge-base')->group(function () {
-    Route::get('/', [KnowledgeBaseController::class, 'index'])->name('knowledge-base.index');
-    Route::get('/{slug}', [KnowledgeBaseController::class, 'show'])->name('knowledge-base.show');
+Route::prefix('knowledge-base')->as('knowledge-base.')->group(function () {
+    Route::get('/', [KnowledgeBaseController::class, 'index'])->name('index');
+    Route::get('/{slug}', [KnowledgeBaseController::class, 'show'])->name('show');
 });
 
+// Postmark webhook for inbound emails (no auth required)
+Route::post('/webhooks/postmark/inbound', [PostmarkWebhookController::class, 'handleInbound'])
+    ->name('postmark.webhook.inbound');
+
+// Local AI development
+Route::get('/pchat', function (Chat $chat) {
+    $messages = [
+        ['role' => 'user', 'content' => 'Always answer in top poetic rhymes. Today is Rhyme Thursday.'],
+        ['role' => 'assistant', 'content' => 'Sure, I can rhyme for you!'],
+        ['role' => 'system', 'content' => 'Just poetic rhymes, no introduction.'],
+    ];
+
+    $pchat = $chat->send($messages);
+
+    return Inertia::render('Dashboard', ['pchat' => $pchat]);
+})->name('pchat')->middleware(['auth:web', 'verified']);
+
 Route::middleware(['auth:web', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
     // Helpdesk routes
-    Route::prefix('helpdesk')->group(function () {
-        Route::get('/', [ConversationController::class, 'index'])->name('helpdesk.index');
-        Route::get('/{conversation}', [ConversationController::class, 'index'])->name('helpdesk.show');
-        Route::post('/{conversation}/messages', [MessageController::class, 'store'])->name('helpdesk.messages.store');
-        Route::patch('/{conversation}/status', [StatusController::class, 'update'])->name('helpdesk.status.update');
-        Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead'])->name('conversations.read');
-        Route::post('/conversations/{conversation}/unread', [ConversationController::class, 'markAsUnread'])->name('conversations.unread');
-        Route::post('/conversations/{conversation}/assign', [ConversationController::class, 'assign'])->name('conversations.assign');
+    Route::prefix('helpdesk')->as('helpdesk.')->middleware('permission:view-helpdesk')->group(function () {
+        Route::get('/', [ConversationController::class, 'index'])->name('index');
+        Route::get('/{conversation}', [ConversationController::class, 'index'])->name('show');
+        Route::post('/{conversation}/messages', [MessageController::class, 'store'])
+            ->name('messages.store')
+            ->middleware('permission:manage-helpdesk');
+        Route::patch('/{conversation}/status', [StatusController::class, 'update'])
+            ->name('status.update')
+            ->middleware('permission:manage-helpdesk');
+        Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead'])
+            ->name('conversations.read')
+            ->middleware('permission:manage-helpdesk');
+        Route::post('/conversations/{conversation}/unread', [ConversationController::class, 'markAsUnread'])
+            ->name('conversations.unread')
+            ->middleware('permission:manage-helpdesk');
+        Route::post('/conversations/{conversation}/assign', [ConversationController::class, 'assign'])
+            ->name('conversations.assign')
+            ->middleware('permission:manage-helpdesk');
     });
 
-
     // Admin Knowledge Base routes (requires manage-knowledge-base permission)
-    Route::prefix('admin/knowledge-base')->group(function () {
+    Route::prefix('admin/knowledge-base')->as('admin.knowledge-base.')->middleware('permission:manage-knowledge-base')->group(function () {
         // Article management
-        Route::get('/', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'index'])->name('admin.knowledge-base.index');
-        Route::get('/create', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'create'])->name('admin.knowledge-base.create');
-        Route::post('/', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'store'])->name('admin.knowledge-base.store');
-        Route::get('/{article}', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'show'])->name('admin.knowledge-base.show');
-        Route::get('/{article}/edit', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'edit'])->name('admin.knowledge-base.edit');
-        Route::put('/{article}', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'update'])->name('admin.knowledge-base.update');
-        Route::delete('/{article}', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'destroy'])->name('admin.knowledge-base.destroy');
-
+        Route::get('/', [AdminKnowledgeBaseController::class, 'index'])->name('index');
+        Route::get('/create', [AdminKnowledgeBaseController::class, 'create'])->name('create');
+        Route::post('/', [AdminKnowledgeBaseController::class, 'store'])->name('store');
+        Route::get('/{article}', [AdminKnowledgeBaseController::class, 'show'])->name('show');
+        Route::get('/{article}/edit', [AdminKnowledgeBaseController::class, 'edit'])->name('edit');
+        Route::put('/{article}', [AdminKnowledgeBaseController::class, 'update'])->name('update');
+        Route::delete('/{article}', [AdminKnowledgeBaseController::class, 'destroy'])->name('destroy');
         // Restore and force delete for soft-deleted articles
-        Route::post('/{id}/restore', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'restore'])->name('admin.knowledge-base.restore');
-        Route::delete('/{id}/force-delete', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'forceDelete'])->name('admin.knowledge-base.force-delete');
-
+        Route::post('/{id}/restore', [AdminKnowledgeBaseController::class, 'restore'])->name('restore');
+        Route::delete('/{id}/force-delete', [AdminKnowledgeBaseController::class, 'forceDelete'])->name('force-delete');
         // File upload endpoints for TipTap editor
-        Route::post('/upload-image', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'uploadImage'])->name('admin.knowledge-base.upload-image');
-        Route::post('/upload-file', [App\Http\Controllers\Admin\KnowledgeBaseController::class, 'uploadFile'])->name('admin.knowledge-base.upload-file');
+        Route::post('/upload-image', [AdminKnowledgeBaseController::class, 'uploadImage'])->name('upload-image');
+        Route::post('/upload-file', [AdminKnowledgeBaseController::class, 'uploadFile'])->name('upload-file');
     });
 
     // Admin Tag Management routes (requires manage-knowledge-base permission)
-    Route::middleware(['can:manage-knowledge-base'])->prefix('admin/tags')->group(function () {
-        Route::get('/', [App\Http\Controllers\Admin\TagController::class, 'index'])->name('admin.tags.index');
-        Route::post('/', [App\Http\Controllers\Admin\TagController::class, 'store'])->name('admin.tags.store');
-        Route::put('/{tag}', [App\Http\Controllers\Admin\TagController::class, 'update'])->name('admin.tags.update');
-        Route::delete('/{tag}', [App\Http\Controllers\Admin\TagController::class, 'destroy'])->name('admin.tags.destroy');
-        Route::get('/list', [App\Http\Controllers\Admin\TagController::class, 'list'])->name('admin.tags.list');
+    Route::prefix('admin/tags')->as('admin.tags.')->middleware('permission:manage-tags')->group(function () {
+        Route::get('/', [TagController::class, 'index'])->name('index');
+        Route::post('/', [TagController::class, 'store'])->name('store');
+        Route::put('/{tag}', [TagController::class, 'update'])->name('update');
+        Route::delete('/{tag}', [TagController::class, 'destroy'])->name('destroy');
+        Route::get('/list', [TagController::class, 'list'])->name('list');
     });
 
     // AI Answer Generation routes
-    Route::prefix('ai')->group(function () {
-        Route::post('/answer', [App\Http\Controllers\AIAnswerController::class, 'generate'])->name('ai.answer.generate');
-        Route::post('/sources', [App\Http\Controllers\AIAnswerController::class, 'sources'])->name('ai.sources');
+    Route::prefix('ai')->as('ai.')->middleware('permission:generate-ai-answers')->group(function () {
+        Route::post('/answer', [AIAnswerController::class, 'generate'])->name('answer.generate');
+        Route::post('/sources', [AIAnswerController::class, 'sources'])->name('sources');
     });
-
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';

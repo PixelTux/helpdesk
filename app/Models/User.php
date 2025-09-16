@@ -6,27 +6,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUlids;
-    
+    use HasFactory, Notifiable, HasUlids, HasRoles;
+
     /**
      * The primary key for the model.
      *
      * @var string
      */
     protected $primaryKey = 'id';
-    
+
     /**
      * The "type" of the primary key ID.
      *
      * @var string
      */
     protected $keyType = 'string';
-    
+
     /**
      * Indicates if the IDs are auto-incrementing.
      *

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type NavItem } from '@/../types';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -10,30 +11,63 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarTrigger
+    SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { type NavItem } from '@/../types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, HelpCircle } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, LampDesk, BookType, BookText, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { computed } from 'vue';
+
+interface PageProps {
+  auth: {
+    user: {
+      id: number;
+      name: string;
+      email: string;
+      roles: string[];
+      permissions: string[];
+    } | null;
+  };
+}
+
+const page = usePage<PageProps>();
+
+const hasPermission = (permission: string) => {
+  return page.props.auth.user?.permissions.includes(permission) ?? false;
+};
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+        permission: null,
     },
     {
         title: 'Helpdesk',
         href: '/helpdesk',
-        icon: LayoutGrid,
+        icon: LampDesk,
+        permission: 'view-helpdesk',
+    },
+    {
+        title: 'Admin Knowledge Base',
+        href: '/admin/knowledge-base',
+        icon: BookText,
+        permission: 'view-helpdesk',
     },
     {
         title: 'Knowledge Base',
-        href: '/admin/knowledge-base',
-        icon: HelpCircle,
+        href: '/knowledge-base',
+        icon: BookType,
+        permission: 'admin',
     },
 ];
+
+const filteredMainNavItems = computed(() => {
+  return mainNavItems.filter(item =>
+    item.permission === null || hasPermission(item.permission)
+  );
+});
 
 const footerNavItems: NavItem[] = [
     {
