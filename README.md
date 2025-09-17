@@ -17,8 +17,8 @@ This is a complete helpdesk solution built with Laravel 12 and Vue 3 that includ
 1. **Environment setup**
    ```bash
    cp .env.example .env
-   php artisan key:generate
    composer install --ignore-platform-reqs
+   php artisan key:generate
    npm install
    ```
 
