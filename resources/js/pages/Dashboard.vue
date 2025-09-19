@@ -24,7 +24,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="h-dvh p-6 flex flex-1 flex-col gap-4 rounded-xl overflow-x-auto">
+        <div class="h-full flex flex-1 flex-col gap-4 rounded-xl overflow-x-auto px-4 py-6">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <PlaceholderPattern />

@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 px-4 py-6">
     <!-- Header -->
     <div class="rounded-lg shadow-sm border">
       <div class="flex justify-between items-start p-6">

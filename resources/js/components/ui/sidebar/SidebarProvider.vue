@@ -81,7 +81,7 @@ provideSidebarContext({
         '--sidebar-width': SIDEBAR_WIDTH,
         '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
       }"
-      :class="cn('group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full transition-opacity duration-300', props.class)"
+      :class="cn('flex min-h-svh w-full transition-opacity duration-300', props.class)"
       v-bind="$attrs"
     >
       <slot />

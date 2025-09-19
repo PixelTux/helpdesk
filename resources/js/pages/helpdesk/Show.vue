@@ -1,7 +1,7 @@
 <template>
     <Head title="Helpdesk" />
 
-    <AppLayout title="Conversation" class="p-6">
+    <AppLayout title="Conversation" class="px-4 py-6">
     <template #header>
       <div class="flex justify-between items-center">
         <Breadcrumb :items="[

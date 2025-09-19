@@ -1,7 +1,7 @@
 <template>
   <Head title="Dashboard" />
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex flex-col gap-6 p-6">
+    <div class="flex flex-col gap-6 px-4 py-6">
       <!-- Search Header -->
       <div class="space-y-6">
         <h1 class="text-3xl font-bold">Knowledge Base</h1>
@@ -164,6 +164,7 @@ import CardFooter from "@/components/ui/card/CardFooter.vue";
 import CardHeader from "@/components/ui/card/CardHeader.vue";
 import CardTitle from "@/components/ui/card/CardTitle.vue";
 import Input from "@/components/ui/input/Input.vue";
+import { BreadcrumbItemType } from "@/types/index";
 import { Link, router } from "@inertiajs/vue3";
 import { useThrottleFn } from "@vueuse/core";
 import { ref } from "vue";
@@ -178,12 +179,18 @@ interface Article {
   tag_names: string[];
 }
 
-const props = defineProps<{
-  articles: { data: Article[]; links: any[]; current_page: number; last_page: number };
-  tags: Array<{ name: string; slug: string }>;
-  currentFilters: { search: string; tag: string; page: number };
-  currentTag?: { name: string; slug: string } | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    breadcrumbs?: BreadcrumbItemType[];
+    articles: { data: Article[]; links: any[]; current_page: number; last_page: number };
+    tags: Array<{ name: string; slug: string }>;
+    currentFilters: { search: string; tag: string; page: number };
+    currentTag?: { name: string; slug: string } | null;
+  }>(),
+  {
+    breadcrumbs: () => [],
+  }
+);
 
 const searchQuery = ref(props.currentFilters.search || "");
 const selectedTag = ref(props.currentFilters.tag || "");
