@@ -1,33 +1,33 @@
 // Conversation collapse state types
 export interface ConversationCollapseState {
-  filterCollapsed: boolean;
-  replyFormCollapsed: boolean;
+    filterCollapsed: boolean;
+    replyFormCollapsed: boolean;
 }
 
 export interface CollapseStatesStore {
-  [conversationId: string]: ConversationCollapseState;
+    [conversationId: string]: ConversationCollapseState;
 }
 
 // Navigation types
 export interface BreadcrumbItemType {
-  title: string;
-  label?: string;
-  href: string;
+    title: string;
+    label?: string;
+    href: string;
 }
 
 export interface NavItem {
-  title: string;
-  href: string;
-  icon?: any;
+    title: string;
+    href: string;
+    icon?: any;
 }
 
 // Extend Inertia page props to include collapse states
 declare global {
-  namespace App {
-    interface PageProps {
-      collapseStates?: CollapseStatesStore;
+    namespace App {
+        interface PageProps {
+            collapseStates?: CollapseStatesStore;
+        }
     }
-  }
 }
 
 // Re-export generated types

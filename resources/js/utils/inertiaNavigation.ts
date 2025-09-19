@@ -1,5 +1,5 @@
-import { router } from '@inertiajs/vue3';
 import { useConversationCollapseState } from '@/composables/useConversationCollapseState';
+import { router } from '@inertiajs/vue3';
 
 /**
  * Navigate to a conversation while preserving collapse state
@@ -7,15 +7,15 @@ import { useConversationCollapseState } from '@/composables/useConversationColla
  * @param options - Additional Inertia options
  */
 export function navigateToConversation(conversationId: string, options: any = {}) {
-  // Ensure we persist the current state before navigating
-  const { persistState } = useConversationCollapseState();
-  persistState();
+    // Ensure we persist the current state before navigating
+    const { persistState } = useConversationCollapseState();
+    persistState();
 
-  router.visit(`/helpdesk/${conversationId}`, {
-    preserveState: true,
-    preserveScroll: true,
-    ...options,
-  });
+    router.visit(`/helpdesk/${conversationId}`, {
+        preserveState: true,
+        preserveScroll: true,
+        ...options,
+    });
 }
 
 /**
@@ -25,20 +25,20 @@ export function navigateToConversation(conversationId: string, options: any = {}
  * @param options - Additional Inertia options
  */
 export function navigateWithFilters(route: string, filters: Record<string, any>, options: any = {}) {
-  // Ensure we persist the current state before navigating
-  const { persistState } = useConversationCollapseState();
-  persistState();
+    // Ensure we persist the current state before navigating
+    const { persistState } = useConversationCollapseState();
+    persistState();
 
-  // Clean undefined values from filters
-  const cleanFilters = Object.fromEntries(
-    Object.entries(filters).filter(([_, v]) => v !== undefined && v !== '' && (Array.isArray(v) ? v.length > 0 : true))
-  );
+    // Clean undefined values from filters
+    const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, v]) => v !== undefined && v !== '' && (Array.isArray(v) ? v.length > 0 : true)),
+    );
 
-  router.get(route, cleanFilters, {
-    preserveState: true,
-    preserveScroll: true,
-    ...options,
-  });
+    router.get(route, cleanFilters, {
+        preserveState: true,
+        preserveScroll: true,
+        ...options,
+    });
 }
 
 /**
@@ -48,27 +48,22 @@ export function navigateWithFilters(route: string, filters: Record<string, any>,
  * @param data - Data to send
  * @param options - Additional Inertia options
  */
-export function inertiaRequest(
-  method: 'get' | 'post' | 'put' | 'patch' | 'delete' | 'visit',
-  url: string,
-  data: any = {},
-  options: any = {}
-) {
-  // Ensure we persist the current state before making the request
-  const { persistState } = useConversationCollapseState();
-  persistState();
+export function inertiaRequest(method: 'get' | 'post' | 'put' | 'patch' | 'delete' | 'visit', url: string, data: any = {}, options: any = {}) {
+    // Ensure we persist the current state before making the request
+    const { persistState } = useConversationCollapseState();
+    persistState();
 
-  const defaultOptions = {
-    preserveState: true,
-    preserveScroll: true,
-    ...options,
-  };
+    const defaultOptions = {
+        preserveState: true,
+        preserveScroll: true,
+        ...options,
+    };
 
-  if (method === 'visit') {
-    return router.visit(url, defaultOptions);
-  }
+    if (method === 'visit') {
+        return router.visit(url, defaultOptions);
+    }
 
-  return (router as any)[method](url, data, defaultOptions);
+    return (router as any)[method](url, data, defaultOptions);
 }
 
 /**
@@ -77,16 +72,21 @@ export function inertiaRequest(
  * @param options - Additional options for the request
  */
 export function markConversationAsRead(
-  conversationId: string,
-  options: { 
-    onSuccess?: (data: any) => void;
-    onError?: (error: any) => void;
-  } = {}
+    conversationId: string,
+    options: {
+        onSuccess?: (data: any) => void;
+        onError?: (error: any) => void;
+    } = {},
 ) {
-  return inertiaRequest('post', `/helpdesk/conversations/${conversationId}/read`, {}, {
-    preserveState: true,
-    preserveScroll: true,
-    onSuccess: options.onSuccess || (() => {}),
-    onError: options.onError || (() => {}),
-  });
+    return inertiaRequest(
+        'post',
+        `/helpdesk/conversations/${conversationId}/read`,
+        {},
+        {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: options.onSuccess || (() => {}),
+            onError: options.onError || (() => {}),
+        },
+    );
 }

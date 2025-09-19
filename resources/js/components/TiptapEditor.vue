@@ -1,95 +1,87 @@
 <template>
-  <div class="tiptap-editor">
-    <!-- Toolbar -->
-    <div class="toolbar border-b border-accent-foreground/10 p-1 flex gap-1 flex-wrap">
-      <button
-        type="button"
-        @click="editor?.chain().focus().toggleBold().run()"
-        :class="{ 'is-active': editor?.isActive('bold') }"
-        class="toolbar-btn"
-        title="Bold"
-      >
-        <strong>B</strong>
-      </button>
+    <div class="tiptap-editor">
+        <!-- Toolbar -->
+        <div class="toolbar flex flex-wrap gap-1 border-b border-accent-foreground/10 p-1">
+            <button
+                type="button"
+                @click="editor?.chain().focus().toggleBold().run()"
+                :class="{ 'is-active': editor?.isActive('bold') }"
+                class="toolbar-btn"
+                title="Bold"
+            >
+                <strong>B</strong>
+            </button>
 
-      <button
-        type="button"
-        @click="editor?.chain().focus().toggleItalic().run()"
-        :class="{ 'is-active': editor?.isActive('italic') }"
-        class="toolbar-btn"
-        title="Italic"
-      >
-        <em>I</em>
-      </button>
+            <button
+                type="button"
+                @click="editor?.chain().focus().toggleItalic().run()"
+                :class="{ 'is-active': editor?.isActive('italic') }"
+                class="toolbar-btn"
+                title="Italic"
+            >
+                <em>I</em>
+            </button>
 
-      <button
-        type="button"
-        @click="editor?.chain().focus().toggleCode().run()"
-        :class="{ 'is-active': editor?.isActive('code') }"
-        class="toolbar-btn"
-        title="Inline Code"
-      >
-        &lt;/&gt;
-      </button>
+            <button
+                type="button"
+                @click="editor?.chain().focus().toggleCode().run()"
+                :class="{ 'is-active': editor?.isActive('code') }"
+                class="toolbar-btn"
+                title="Inline Code"
+            >
+                &lt;/&gt;
+            </button>
 
-      <div class="border-l border-accent-foreground/15 mx-0.5 h-6"></div>
+            <div class="mx-0.5 h-6 border-l border-accent-foreground/15"></div>
 
-      <button
-        type="button"
-        @click="editor?.chain().focus().toggleBulletList().run()"
-        :class="{ 'is-active': editor?.isActive('bulletList') }"
-        class="toolbar-btn"
-        title="Bullet List"
-      >
-        •
-      </button>
+            <button
+                type="button"
+                @click="editor?.chain().focus().toggleBulletList().run()"
+                :class="{ 'is-active': editor?.isActive('bulletList') }"
+                class="toolbar-btn"
+                title="Bullet List"
+            >
+                •
+            </button>
 
-      <button
-        type="button"
-        @click="editor?.chain().focus().toggleOrderedList().run()"
-        :class="{ 'is-active': editor?.isActive('orderedList') }"
-        class="toolbar-btn"
-        title="Ordered List"
-      >
-        1.
-      </button>
+            <button
+                type="button"
+                @click="editor?.chain().focus().toggleOrderedList().run()"
+                :class="{ 'is-active': editor?.isActive('orderedList') }"
+                class="toolbar-btn"
+                title="Ordered List"
+            >
+                1.
+            </button>
 
-      <div class="border-l border-accent-foreground/15 mx-0.5 h-6"></div>
+            <div class="mx-0.5 h-6 border-l border-accent-foreground/15"></div>
 
-      <button
-        type="button"
-        @click="addLink"
-        :class="{ 'is-active': editor?.isActive('link') }"
-        class="toolbar-btn"
-        title="Add Link"
-      >
-        🔗
-      </button>
+            <button type="button" @click="addLink" :class="{ 'is-active': editor?.isActive('link') }" class="toolbar-btn" title="Add Link">🔗</button>
+        </div>
+
+        <!-- Editor Content -->
+        <editor-content :editor="editor" class="editor-content" />
     </div>
-
-    <!-- Editor Content -->
-    <editor-content :editor="editor" class="editor-content" />
-  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
-  modelValue: {
-    type: String,
-    default: '',
-  },
-  placeholder: {
-    type: String,
-    default: 'Start typing...',
-  },
-  onSubmit: {
-    type: Function,
-    default: null,
-  }
+    modelValue: {
+        type: String,
+        default: '',
+    },
+    placeholder: {
+        type: String,
+        default: 'Start typing...',
+    },
+    onSubmit: {
+        type: Function,
+        default: null,
+    },
 });
 
 const emit = defineEmits(['update:modelValue', 'update:isEmpty']);
@@ -98,181 +90,184 @@ const editor = ref(null);
 
 // Initialize editor
 onMounted(() => {
-  editor.value = new Editor({
-    extensions: [
-        StarterKit.configure({
-        link:{
-            openOnClick: false,
-            HTMLAttributes: {
-                class: 'text-blue-600 underline',
-            },
-        }
-      }),
-    ],
-    content: props.modelValue,
-    onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      emit('update:modelValue', html);
+    editor.value = new Editor({
+        extensions: [
+            StarterKit.configure({
+                link: {
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        class: 'text-blue-600 underline',
+                    },
+                },
+            }),
+        ],
+        content: props.modelValue,
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            emit('update:modelValue', html);
 
-      // Check if editor is empty
-      const isEmpty = html === '<p></p>' || !html.replace(/<[^>]*>/g, '').trim();
-      emit('update:isEmpty', isEmpty);
-    },
-    editorProps: {
-      handleKeyDown: (view, event) => {
-        // Handle Ctrl+Enter to submit
-        if (event.ctrlKey && event.key === 'Enter' && props.onSubmit) {
-          event.preventDefault();
-          props.onSubmit();
-          return true;
-        }
-        return false;
-      },
-    },
-  });
+            // Check if editor is empty
+            const isEmpty = html === '<p></p>' || !html.replace(/<[^>]*>/g, '').trim();
+            emit('update:isEmpty', isEmpty);
+        },
+        editorProps: {
+            handleKeyDown: (view, event) => {
+                // Handle Ctrl+Enter to submit
+                if (event.ctrlKey && event.key === 'Enter' && props.onSubmit) {
+                    event.preventDefault();
+                    props.onSubmit();
+                    return true;
+                }
+                return false;
+            },
+        },
+    });
 });
 
 // Watch for external changes to modelValue
-watch(() => props.modelValue, (newValue) => {
-  if (editor.value && editor.value.getHTML() !== newValue) {
-    editor.value.commands.setContent(newValue);
-  }
-});
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        if (editor.value && editor.value.getHTML() !== newValue) {
+            editor.value.commands.setContent(newValue);
+        }
+    },
+);
 
 // Clean up
 onBeforeUnmount(() => {
-  if (editor.value) {
-    editor.value.destroy();
-  }
+    if (editor.value) {
+        editor.value.destroy();
+    }
 });
 
 // Expose methods
 const getHTML = () => {
-  return editor.value?.getHTML() || '';
+    return editor.value?.getHTML() || '';
 };
 
 const getJSON = () => {
-  return editor.value?.getJSON() || {};
+    return editor.value?.getJSON() || {};
 };
 
 const clearContent = () => {
-  editor.value?.commands.clearContent();
+    editor.value?.commands.clearContent();
 };
 
 const focus = () => {
-  editor.value?.commands.focus();
+    editor.value?.commands.focus();
 };
 
 const addLink = () => {
-  const url = window.prompt('URL');
+    const url = window.prompt('URL');
 
-  if (url) {
-    editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
-  }
+    if (url) {
+        editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    }
 };
 
 // Expose methods to parent component
 defineExpose({
-  getHTML,
-  getJSON,
-  clearContent,
-  focus,
-  editor,
+    getHTML,
+    getJSON,
+    clearContent,
+    focus,
+    editor,
 });
 </script>
 
 <style scoped>
 .tiptap-editor {
-  border: 1px solid var(--color-sidebar-border);
-  border-radius: 0.5rem;
-  background: var(--color-accent);
+    border: 1px solid var(--color-sidebar-border);
+    border-radius: 0.5rem;
+    background: var(--color-accent);
 }
 
 .toolbar-btn {
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-primary);
-  background-color: var(--color-primary-foreground);
-  border: 1px solid var(--color-sidebar-border);
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-  min-width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background-color: var(--color-primary-foreground);
+    border: 1px solid var(--color-sidebar-border);
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 .toolbar-btn:hover {
-  background-color: var(--muted);
-  border-color: var(--ring);
+    background-color: var(--muted);
+    border-color: var(--ring);
 }
 
 .toolbar-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 .toolbar-btn.is-active {
-  background-color: var(--color-primary);
-  color: var(--color-accent);
-  border-color: var(--muted);
+    background-color: var(--color-primary);
+    color: var(--color-accent);
+    border-color: var(--muted);
 }
 
 .editor-content {
-  min-height: 150px;
-  padding: 1rem;
+    min-height: 150px;
+    padding: 1rem;
 }
 
 /* Tiptap Editor Content Styles */
 :deep(.ProseMirror) {
-  outline: none;
-  min-height: 150px;
+    outline: none;
+    min-height: 150px;
 }
 
 :deep(.ProseMirror p) {
-  margin: 0;
-  line-height: 1.5;
+    margin: 0;
+    line-height: 1.5;
 }
 
 :deep(.ProseMirror p:not(:last-child)) {
-  margin-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
 }
 
 :deep(.ProseMirror strong) {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 :deep(.ProseMirror em) {
-  font-style: italic;
+    font-style: italic;
 }
 
 :deep(.ProseMirror code) {
-  background-color: var(--muted-foreground);
-  color: var(--muted);
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875em;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+    background-color: var(--muted-foreground);
+    color: var(--muted);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 :deep(.ProseMirror ul, .ProseMirror ol) {
-  padding-left: 1.5rem;
-  margin: 0.75rem 0;
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
 }
 
 :deep(.ProseMirror li) {
-  margin: 0.25rem 0;
+    margin: 0.25rem 0;
 }
 
 :deep(.ProseMirror a) {
-  color: #2563eb;
-  text-decoration: underline;
+    color: #2563eb;
+    text-decoration: underline;
 }
 
 :deep(.ProseMirror a:hover) {
-  color: #1d4ed8;
+    color: #1d4ed8;
 }
 </style>

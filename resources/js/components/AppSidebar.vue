@@ -14,26 +14,26 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LampDesk, BookType, BookText, LayoutGrid } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
+import { BookOpen, BookText, BookType, Folder, LampDesk, LayoutGrid } from 'lucide-vue-next';
 import { computed } from 'vue';
+import AppLogo from './AppLogo.vue';
 
 interface PageProps {
-  auth: {
-    user: {
-      id: number;
-      name: string;
-      email: string;
-      roles: string[];
-      permissions: string[];
-    } | null;
-  };
+    auth: {
+        user: {
+            id: number;
+            name: string;
+            email: string;
+            roles: string[];
+            permissions: string[];
+        } | null;
+    };
 }
 
 const page = usePage<PageProps>();
 
 const hasPermission = (permission: string) => {
-  return page.props.auth.user?.permissions.includes(permission) ?? false;
+    return page.props.auth.user?.permissions.includes(permission) ?? false;
 };
 
 const mainNavItems: NavItem[] = [
@@ -64,9 +64,7 @@ const mainNavItems: NavItem[] = [
 ];
 
 const filteredMainNavItems = computed(() => {
-  return mainNavItems.filter(item =>
-    item.permission === null || hasPermission(item.permission)
-  );
+    return mainNavItems.filter((item) => item.permission === null || hasPermission(item.permission));
 });
 
 const footerNavItems: NavItem[] = [
@@ -94,8 +92,7 @@ const footerNavItems: NavItem[] = [
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
-                        <SidebarTrigger class="flex items-center gap-2">
-                        </SidebarTrigger>
+                        <SidebarTrigger class="flex items-center gap-2"> </SidebarTrigger>
                     </div>
                 </SidebarMenuItem>
             </SidebarMenu>
